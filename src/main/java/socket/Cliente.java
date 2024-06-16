@@ -1,8 +1,13 @@
 package socket;
 
+import java.io.EOFException;
 import java.io.IOException;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.Scanner;
 
 public class Cliente {
 	public static void main(String[] args) {
