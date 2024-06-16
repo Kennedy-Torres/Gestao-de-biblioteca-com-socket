@@ -50,6 +50,32 @@ public class Cliente {
 				}
 			}).start();
 
+			/* 4. ESCREVENDO MENSAGEM PARA O SERVIDOR */
+			Scanner consoleDoCliente = new Scanner(System.in);
+			try{
+				while (true) {
+					String mensagemDoCliente = consoleDoCliente.nextLine();
+					try{
+						if (mensagemDoCliente.equalsIgnoreCase("::sair")) {
+							System.out.println("Encerrando o cliente...");
+							break;
+						}
+						output.writeUTF(mensagemDoCliente);
+						output.flush();
+
+					}catch (EOFException e) {
+						// conexao do servidor foi encerrada enquanto o cliente tentava enviar uma mensagem
+						e.printStackTrace();
+						break;
+					}catch (SocketException e) { // ---> lida com desconexões inesperadas do cliente
+						System.out.println("O cliente não consegue mais enviar mensagem.");
+						break;
+					}
+				}
+			}catch (IOException e){
+				e.printStackTrace();
+			}
+
 		} catch (UnknownHostException e) {
 			System.out.println("Problema no host");
 			System.err.println("Erro: " + e.getMessage());
