@@ -1,0 +1,53 @@
+{
+  "books" : [ {
+    "titulo" : "Meditações",
+    "autor" : "Marco Aurélio",
+    "genero" : "Filosofia",
+    "numeroDeExemplares" : 2
+  }, {
+    "titulo" : "Orgulho e Preconceito",
+    "autor" : "Jane Austen",
+    "genero" : "Romance",
+    "numeroDeExemplares" : 1
+  }, {
+    "titulo" : "Nada Pode Me Ferir",
+    "autor" : "David Goggins",
+    "genero" : "Autoajuda",
+    "numeroDeExemplares" : 3
+  }, {
+    "titulo" : "O Homem Invisível",
+    "autor" : "H.G. Wells",
+    "genero" : "Ficção Científica",
+    "numeroDeExemplares" : 4
+  }, {
+    "titulo" : "Utopia",
+    "autor" : "Thomas More",
+    "genero" : "Filosofia",
+    "numeroDeExemplares" : 4
+  }, {
+    "titulo" : "A Revolução dos Bichos",
+    "autor" : "George Orwell",
+    "genero" : "Fábula Política",
+    "numeroDeExemplares" : 6
+  }, {
+    "titulo" : "As Crônicas de Nárnia",
+    "autor" : "C.S. Lewis",
+    "genero" : "Fantasia",
+    "numeroDeExemplares" : 7
+  }, {
+    "titulo" : "Cartas Chilenas",
+    "autor" : "Tomás Antônio Gonzaga",
+    "genero" : "Sátira",
+    "numeroDeExemplares" : 8
+  }, {
+    "titulo" : "O Príncipe",
+    "autor" : "Nicolau Maquiavel",
+    "genero" : "Filosofia Política",
+    "numeroDeExemplares" : 9
+  }, {
+    "titulo" : "O Guia do Mochileiro das Galáxias",
+    "autor" : "Douglas Adams",
+    "genero" : "Ficção Científica",
+    "numeroDeExemplares" : 1
+  } ]
+}
