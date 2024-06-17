@@ -120,3 +120,46 @@ public GerenciadorDeCliente(Socket cliente) {
             output.flush();
         }
     }
+
+    private void menu() throws IOException {
+        output.writeUTF("Menu:\n1. Listar livros\n2. Cadastro de livros\n3. Alugar livros" +
+                "\n4. Devolução de livros\n5. Sair");
+        output.flush();
+        while (true) {
+            String escolhaDoCliente = input.readUTF();
+            if (escolhaDoCliente.equals("1")) {
+                listaOsLivrosEExibeDetalhes();
+                voltarParaOMenu();
+                break;
+            } else if (escolhaDoCliente.equals("2")) {
+                cadastrarLivros();
+                break;
+            } else if (escolhaDoCliente.equals("3")) {
+                alugarLivro();
+                break;
+            } else if (escolhaDoCliente.equals("4")) {
+                devolverLivroAlugado();
+                break;
+            } else if (escolhaDoCliente.equals("5")) {
+                output.writeUTF("Conexão do cliente com o servidor será cortada...");
+                output.flush();
+                break;
+            } else {
+                output.writeUTF("Opção inválida. Tente novamente!\nMenu:\n1. Listar livros" +
+                        "\n2. Cadastro de livros\n3. Alugar livros\n4. Devolução de livros\n5. Sair");
+                output.flush();
+            }
+        }
+    }
+
+    /* ESCREVE/SOBRESCREVE AS INFORMAÇÕES DO LIVRO NO ARQUIVO JSON*/
+    private void serializaOsLivros(){
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, List<Livro>> map = Map.of("books", livros);
+        try (FileWriter writer = new FileWriter(filePath)) {
+            objectMapper.writerWithDefaultPrettyPrinter().writeValue(writer, map);
+        }catch (IOException e){
+            System.out.println("Nao foi possivel a escrita no arquivo JSON");
+            e.printStackTrace();
+        }
+    }
