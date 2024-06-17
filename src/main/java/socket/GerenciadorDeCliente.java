@@ -201,3 +201,192 @@ public GerenciadorDeCliente(Socket cliente) {
         output.writeUTF("Livro cadastrado com sucesso!");
         output.flush();
     }
+
+    private void incrementarExemplaresDeLivroNoEstoque() throws IOException {
+        listaTodosOsLivrosPeloTituloEEnviaParaCliente();
+        output.writeUTF("Escolha um dos livros disponiveis para incrementar os exemplares: ");
+        output.flush();
+
+        while (true) {
+            String indiceEscolhidoEmString = input.readUTF();
+            int indiceEscolhido = Integer.parseInt(indiceEscolhidoEmString);
+
+            if (indiceEscolhido >= 0 && indiceEscolhido < livros.size()){
+                Livro livroEscolhido = livros.get(indiceEscolhido);
+                output.writeUTF("Digite o número de exemplares a adicionar:");
+                output.flush();
+
+                String exemplaresAdicionaisEmString = input.readUTF();
+                int exemplaresAdicionais = Integer.parseInt(exemplaresAdicionaisEmString);
+
+                /*INCREMENTA MAIS ESTOQUE NO LIVRO SELECIONADO*/
+                livroEscolhido.setNumeroDeExemplares(livroEscolhido.getNumeroDeExemplares() + exemplaresAdicionais);
+
+                serializaOsLivros();
+
+                output.writeUTF("Exemplares incrementados com sucesso!");
+                output.flush();
+                break;
+            }
+            output.writeUTF("Indice inválido. Tente novamente!");
+            output.flush();
+        }
+    }
+
+    /*CADASTRA NOVOS LIVROS OU INCREMENTA EXEMPLARES(CASO JÁ TENHA O LIVRO CADASTRADO)...VOLTA AO MENU*/
+    private void cadastrarLivros()throws IOException{
+        output.writeUTF("Deseja cadastrar um:\n1: Novo livro\n2: Livro em estoque");
+        output.flush();
+        while (true){
+            String EscolheQualLivroCadastrar = input.readUTF();
+            if(EscolheQualLivroCadastrar.equals("1")){
+                cadastrarNovoLivro();
+                voltarParaOMenu();
+                break;
+            } else if (EscolheQualLivroCadastrar.equals("2")) {
+                incrementarExemplaresDeLivroNoEstoque();
+                voltarParaOMenu();
+                break;
+            }else{
+                output.writeUTF("Opção inválida. Tente novamente!\n1: Novo livro" +
+                        "\n2: Livro em estoque");
+                output.flush();
+            }
+        }
+    }
+
+    private List<Livro> alugarLivro() throws IOException {
+        listaTodosOsLivrosPeloTituloEEnviaParaCliente();
+
+        output.writeUTF("Escolha qual dos livros deseja alugar: ");
+        output.flush();
+
+        List<Livro> livrosAlugados = livrosAlugadosPorCliente.get(cliente);
+
+        while (true) {
+            int indiceDoLivroEscolhidoParaAlugar = Integer.parseInt(input.readUTF());
+            if(indiceDoLivroEscolhidoParaAlugar>=0 && indiceDoLivroEscolhidoParaAlugar < livros.size()){
+                Livro livroEscolhido = livros.get(indiceDoLivroEscolhidoParaAlugar);
+
+                if(livroEscolhido.getNumeroDeExemplares()>0){
+                    livroEscolhido.setNumeroDeExemplares(livroEscolhido.getNumeroDeExemplares() -1);
+
+                    serializaOsLivros();
+
+                    // Adiciona o livro à lista de livros alugados pelo cliente
+                    livrosAlugados.add(livroEscolhido);
+
+                    output.writeUTF("Livro alugado com sucesso!");
+                    output.flush();
+                    desejaAlugarOutroLivro();
+                    break;
+                }else{
+                    output.writeUTF("Atualmente todos os exemplares deste livro estão alugados.");
+                    output.flush();
+                    desejaAlugarOutroLivro();
+                    String opcaoDeSairDaAbaAlugarLivro = input.readUTF();
+                    if(opcaoDeSairDaAbaAlugarLivro.equalsIgnoreCase("S")){
+                        alugarLivro();
+                    }else{
+                        voltarParaOMenu();
+                    }
+                }
+            }else{
+                output.writeUTF("Opção inválida. Tente novamente!");
+                output.flush();
+            }
+        }
+        return livrosAlugados;
+    }
+
+    /* PODE ALUGAR OUTRO LIVRO, VOLTAR PARA O MENU OU SAIR*/
+    private void desejaAlugarOutroLivro()throws IOException{
+        output.writeUTF("Deseja alugar outro livro? (S/N)");
+        output.flush();
+        String opcaoDeSairDaAbaAlugarLivro = input.readUTF();
+        if(opcaoDeSairDaAbaAlugarLivro.equalsIgnoreCase("S")){
+            alugarLivro();
+        }else{
+            voltarParaOMenu();
+        }
+    }
+    private void devolverLivroAlugado() throws IOException {
+        List<Livro> livrosAlugados = livrosAlugadosPorCliente.get(cliente);
+
+        if (livrosAlugados.isEmpty()) {
+            output.writeUTF("Você não tem livros alugados.");
+            output.flush();
+            voltarParaOMenu();
+        }else{
+            for (int i = 0; i < livrosAlugados.size(); i++) {
+                output.writeUTF(i + ": " + livrosAlugados.get(i).getTitulo());
+
+            }
+
+            output.writeUTF("Escolha qual livro gostaria de devolver: ");
+            output.flush();
+
+            while(true){
+                int indiceDoLivroDevolvido;
+                try{
+                    indiceDoLivroDevolvido = Integer.parseInt(input.readUTF());
+                }catch (NumberFormatException e){
+                    output.writeUTF("Entrada inválida. Por favor, insira um dos índices listados.");
+                    output.flush();
+                    continue;
+                }
+
+                if(indiceDoLivroDevolvido>=0 && indiceDoLivroDevolvido < livrosAlugados.size()){
+
+                    Livro livroDevolvido = livrosAlugados.remove(indiceDoLivroDevolvido);
+                    livroDevolvido.setNumeroDeExemplares(livroDevolvido.getNumeroDeExemplares() + 1);
+
+                    serializaOsLivros();
+
+                    output.writeUTF("Livro devolvido com sucesso!");
+                    output.flush();
+                    desejaDevolverOutroLivro();
+                    break;
+                }
+                output.writeUTF("Indice inválido. Tente novamente!");
+                output.flush();
+            }
+        }
+    }
+
+    /* PODE DEVOLVER OUTRO LIVRO, VOLTAR PARA O MENU OU SAIR */
+    private void desejaDevolverOutroLivro()throws IOException{
+        output.writeUTF("Deseja devolver outro livro? (S/N)");
+        output.flush();
+        String opcaoDeSairDaAbaDevolverLivro = input.readUTF();
+        if(opcaoDeSairDaAbaDevolverLivro.equalsIgnoreCase("S")){
+            devolverLivroAlugado();
+        }else{
+            voltarParaOMenu();
+        }
+    }
+
+    /*VOLTA AO MENU OU SAI*/
+    public  void voltarParaOMenu(){
+        try{
+            output.writeUTF("\nDeseja voltar ao menu?(S/N)");
+            output.flush();
+            while (true){
+                String escolheOpcoes = input.readUTF();
+                if(escolheOpcoes.equalsIgnoreCase("S") || escolheOpcoes.equalsIgnoreCase("SIM")){
+                    menu();
+                } else if (escolheOpcoes.equalsIgnoreCase("N") || escolheOpcoes.equalsIgnoreCase("NAO")) {
+                    output.writeUTF("Conexão do cliente com o servidor será cortada...");
+                    output.flush();
+                    break;
+                }else{
+                    output.writeUTF("Entrada inválida. Tente novamente! (S/N)");
+                    output.flush();
+                }
+            }
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+}
