@@ -54,5 +54,69 @@ public GerenciadorDeCliente(Socket cliente) {
         }
     }
 
-  
-}
+    @Override
+    public void run() {
+        try {
+            output.writeUTF("Digite seu nome: ");
+            output.flush();
+            this.nomeDoCliente = input.readUTF();
+            // log p/ servidor da conexao do cliente
+            System.err.println(this.nomeDoCliente + " conectou ao servidor.");
+
+            menu();
+
+        }catch(EOFException e){
+            System.out.println("Conexão encerrada pelo cliente de forma inesperada.");
+        } catch (IOException  e) {
+            System.err.println("Erro na comunicação com o cliente "+this.nomeDoCliente);
+        } finally {
+            try {
+                /* FECHANDO STREAMS*/
+                output.close();
+                input.close();
+                cliente.close();
+                // log p/ servidor da desconexao do cliente
+                System.err.println(this.nomeDoCliente + " fechou a conexão");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void listaTodosOsLivrosPeloTituloEEnviaParaCliente() throws IOException {
+        output.writeUTF("=========================\n" +
+                "|| Livros Disponíveis: ||\n" +
+                "=========================");
+        for (int i = 0; i < livros.size(); i++) {
+            output.writeUTF(i + ": " + livros.get(i).getTitulo());
+        }
+    }
+
+    /*LISTA LIVROS E DA A CARACTERISTICA DO LIVRO ESCOLHIDO PELO CLIENTE*/
+    private void listaOsLivrosEExibeDetalhes() throws IOException {
+        listaTodosOsLivrosPeloTituloEEnviaParaCliente();
+
+        output.writeUTF("Escolha um livro para ver os detalhes: ");
+        output.flush();
+
+        /* RECEBE O INDICE ESCOLHIDO PELO CLIENTE E DETALHA O LIVRO*/
+        while (true) {
+            int indiceEscolhido;
+            try{
+                indiceEscolhido = Integer.parseInt(input.readUTF());
+            }catch (NumberFormatException e){
+                output.writeUTF("Entrada inválida. Por favor, insira um dos índices listados.");
+                output.flush();
+                continue;
+            }
+//            indiceEscolhido = Integer.parseInt(input.readUTF());
+            if(indiceEscolhido>= 0 && indiceEscolhido < livros.size()){
+                Livro livroEscolhido = livros.get(indiceEscolhido);
+                output.writeUTF("Detalhes do livro escolhido:\n" + livroEscolhido.toString());
+                output.flush();
+                break;
+            }
+            output.writeUTF("Índice inválido. Tente novamente.");
+            output.flush();
+        }
+    }
