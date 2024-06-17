@@ -163,3 +163,41 @@ public GerenciadorDeCliente(Socket cliente) {
             e.printStackTrace();
         }
     }
+
+     /* CONVERTENDO O JSON EM UM OBJETO MAP - LÊ AS INFORMAÇÕES DO ARQUIVO JSON */
+    private void desserializaOsLivros(StringBuilder jsonContent) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, List<Livro>> map = objectMapper.readValue(jsonContent.toString(), new TypeReference<Map<String, List<Livro>>>() {});
+
+        /* 'books' é a chave do objeto map que mapeia uma lista de objeto livros(fornecidos no JSON) */
+        livros = map.get("books");
+    }
+
+
+    private void cadastrarNovoLivro() throws IOException {
+        output.writeUTF("Para cadastrar um novo livro é preciso informar:");
+        output.writeUTF("	- Título: ");
+        output.flush();
+        String titulo = input.readUTF();
+
+        output.writeUTF("	- Autor: ");
+        output.flush();
+        String autor = input.readUTF();
+
+        output.writeUTF("	- Gênero: ");
+        output.flush();
+        String genero = input.readUTF();
+
+        output.writeUTF("	- Número de exemplares: ");
+        output.flush();
+        int numeroDeExemplares = Integer.parseInt(input.readUTF());
+
+        /* CADASTRA E ADD À LISTA DE LIVROS */
+        Livro novoLivro = new Livro(titulo, autor, genero, numeroDeExemplares);
+        livros.add(novoLivro);
+
+        serializaOsLivros();
+
+        output.writeUTF("Livro cadastrado com sucesso!");
+        output.flush();
+    }
