@@ -109,7 +109,7 @@ public GerenciadorDeCliente(Socket cliente) {
                 output.flush();
                 continue;
             }
-//            indiceEscolhido = Integer.parseInt(input.readUTF());
+
             if(indiceEscolhido>= 0 && indiceEscolhido < livros.size()){
                 Livro livroEscolhido = livros.get(indiceEscolhido);
                 output.writeUTF("Detalhes do livro escolhido:\n" + livroEscolhido.toString());
