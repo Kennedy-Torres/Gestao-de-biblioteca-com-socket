@@ -18,9 +18,9 @@
 
 Basicamente, temos um servidor que consegue se conectar com n clientes. Para cada cliente conectado, um objeto `GerenciadorDeCliente` é instanciado, sendo este um intermediador entre o cliente e o servidor. A classe `GerenciadorDeCliente` possui todo o protocolo do servidor, ou seja, nela encontram-se as funcionalidades que o servidor disponibiliza para o cliente.
 
-### Cliente
+### Classe Cliente
 
-A classe do cliente, quando conectada ao servidor, é responsável apenas por enviar e receber mensagens do servidor de forma paralela.
+A classe do `Cliente`, quando conectada ao servidor, é responsável apenas por enviar e receber mensagens do servidor de forma paralela.
 
 ### Classe Livro
 
