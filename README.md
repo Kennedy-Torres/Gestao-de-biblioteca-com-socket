@@ -1,5 +1,9 @@
 # Projeto : Gestão de uma biblioteca utilizando sockets
 
+## Como rodar o projeto?
+1. Faça a importação dos arquivos para um projeto MAVEN.
+2. Inicialize a classe do servidor e posteriormente a classe do cliente.
+
 ## Recursos utilizados no projeto:
 1. Linguagem de compilação da JVM > 1.8 no mín. Neste projeto foi utilizado a versão 17
 2. projeto gerado em maven
@@ -8,12 +12,23 @@
    3.2 - Annotations utilizado nos getters da classe Livros para garantir que os nomes das propriedades nos dados JSON correspondam aos nomes dos atributos da classe.
    OBS: Essas depêndencias estão adicionadas no arquivo pom.xml gerado pelo MAVEN.
 
-## Breve contexto sobre o código:
-   Basicamente temos um servidor que consegue conectar com n clientes, para cada cliente conectado um objeto "GerenciadorDeCliente" é instânciado( sendo este um intermediador entre cliente e servidor, a classe gerenciadora possui todo o protocolo do servidor, ou seja, nela encontra-se as funcionalidades no qual o servidor disponibiliza para o cliente).
-   Já a classe do cliente, quando conectada ao servidor, é responsável apenas por enviar e receber mensagens do servidor de forma paralela.
-   A classe Livros tem o papel de definir, armazenar e listar os atributos dos livros. Através desses dados fizemos uma conexão dos objetos Java com o arquivo JSON para realizar a serialização e desserialização.
-    
-conclusão: servidor através de um gerenciador disponibiliza funcionalidades para o cliente interagir, para cada informação alterada pelo cliente, nos valores de livros, é salvo/atualizado no arquivo JSON.
+## Breve Contexto Sobre o Código
+
+### Visão Geral
+
+Basicamente, temos um servidor que consegue se conectar com n clientes. Para cada cliente conectado, um objeto `GerenciadorDeCliente` é instanciado, sendo este um intermediador entre o cliente e o servidor. A classe `GerenciadorDeCliente` possui todo o protocolo do servidor, ou seja, nela encontram-se as funcionalidades que o servidor disponibiliza para o cliente.
+
+### Cliente
+
+A classe do cliente, quando conectada ao servidor, é responsável apenas por enviar e receber mensagens do servidor de forma paralela.
+
+### Classe Livro
+
+A classe `Livro` tem o papel de definir, armazenar e listar os atributos dos livros. Através desses dados, fazemos uma conexão dos objetos Java com o arquivo JSON para realizar a serialização e desserialização.
+
+### Conclusão
+
+O servidor, através de um gerenciador, disponibiliza funcionalidades para o cliente interagir. Para cada informação alterada pelo cliente nos valores de livros, o estado é salvo/atualizado no arquivo JSON.
 
 
 
